@@ -27,11 +27,12 @@ module.exports = {
   module: {
     loaders: [
       {
-        test: /\.jsx?$/,
+        test: /\.(js|jsx)$/,
         loader: 'babel-loader',
         exclude: /node_modules/,
         query: {
           presets: ['es2015', 'react', 'stage-2'],
+          plugins: ['react-html-attrs', 'transform-decorators-legacy'],
         },
       },
       { test: /(\.css)$/, loaders: ['style-loader', 'css-loader'] },
