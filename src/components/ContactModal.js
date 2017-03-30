@@ -121,5 +121,5 @@ export default connect(
   dispatch => ({
     addContact(contact) { dispatch(ContactActions.addContact(contact)); },
     updateContact(contact) { dispatch(ContactActions.updateContact(contact)); },
-  })
+  }),
 )(ContactModal);
