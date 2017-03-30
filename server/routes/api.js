@@ -1,4 +1,5 @@
-const express = require('express');
-const router = express.Router();
+const router = require('express').Router();
+
+router.use('/validate-jwt', require('./validateJwt'));
 
 module.exports = router;

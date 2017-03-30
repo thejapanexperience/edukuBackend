@@ -1,9 +1,22 @@
-import { createStore } from 'redux';
-import reducers from './reducers';
+import { createStore, applyMiddleware } from 'redux';
+import { composeWithDevTools } from 'redux-devtools-extension';
+import thunkMiddleware from 'redux-thunk';
+import promiseMiddleware from 'redux-promise-middleware';
 
+import reducers from './reducers';
 import { saveState, loadState } from './localStorage';
 
-const store = createStore(reducers, loadState());
+const middleware = [
+  thunkMiddleware,
+  promiseMiddleware(),
+];
+
+const store = createStore(
+  reducers,
+  loadState(),
+  composeWithDevTools(applyMiddleware(...middleware)),
+);
+
 store.subscribe(() => saveState(store.getState()));
 
 export default store;

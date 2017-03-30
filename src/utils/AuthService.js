@@ -10,7 +10,7 @@ export default class AuthService {
     // Configure Auth0
     this.lock = new Auth0Lock(clientId, domain, {
       auth: {
-        redirectUrl: 'http://localhost:8000/login',
+        redirectUrl: 'https://localhost:8443/login',
         responseType: 'token',
       },
       additionalSignUpFields: [
@@ -49,7 +49,6 @@ export default class AuthService {
       if (error) {
         console.log('Error loading the Profile', error);
       } else {
-        console.log('HERE');
         store.dispatch(ProfileActions.profileLoad(profile));
       }
     });

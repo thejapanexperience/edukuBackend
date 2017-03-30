@@ -1,0 +1,7 @@
+ca.crt
+ca.csr
+ca.key
+server.crt
+server.csr
+server.key
+server.key.passphrase
