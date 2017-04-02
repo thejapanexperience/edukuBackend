@@ -12,6 +12,7 @@ export default class AuthService {
       auth: {
         redirectUrl: 'https://localhost:8443/login',
         responseType: 'token',
+        params: { scope: 'openid app_metadata' },
       },
       additionalSignUpFields: [
         {
