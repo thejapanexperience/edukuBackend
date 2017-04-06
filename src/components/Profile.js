@@ -12,7 +12,6 @@ class Profile extends Component {
 
   render() {
     const { profile, isJwtValid } = this.props;
-    console.log('this: ', this);
 
     return (
       <div>

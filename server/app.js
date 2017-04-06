@@ -1,5 +1,6 @@
 const PORT = process.env.PORT || 8443;
 
+const cors = require('cors');
 const enforce = require('express-sslify'); // enforce redirect to https
 const bodyParser = require('body-parser');
 const express = require('express');
@@ -7,6 +8,7 @@ const morgan = require('morgan');
 const path = require('path');
 const fs = require('fs');
 require('dotenv').config();
+const mongoose = require('mongoose');
 
 const sslCert = {
   key: fs.readFileSync(`${__dirname}/../server.key`),
@@ -16,6 +18,12 @@ const sslCert = {
   rejectUnauthorized: false,
 };
 
+// configure mongoose
+mongoose.Promise = Promise;
+const MONGODB_URI = 'mongodb://127.0.0.1/test';
+mongoose.connect(MONGODB_URI, (err) => {
+  console.log(err || `Mongo connected to ${MONGODB_URI}`);
+});
 
 // server to redirect http to https
 const appHTTP = express();
@@ -50,6 +58,7 @@ app.use(morgan('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, '../public')));
+app.use(cors());
 
 require('./config/webpack')(app);
 

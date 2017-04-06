@@ -4,6 +4,7 @@ import { browserHistory } from 'react-router';
 import store from '../store';
 import { isTokenExpired } from './jwtHelper';
 import * as ProfileActions from '../actions/ProfileActions';
+import * as ApiActions from '../actions/ApiActions';
 
 export default class AuthService {
   constructor(clientId, domain) {
@@ -26,10 +27,12 @@ export default class AuthService {
         {
           type: 'select',
           name: 'user_type',
-          placeholder: 'student or parent',
+          placeholder: 'select user type',
           options: [
             { value: 'parent', label: 'parent' },
             { value: 'student', label: 'student' },
+            { value: 'administrator', label: 'administrator' },
+            { value: 'educator', label: 'educator' },
           ],
         },
       ],
@@ -51,6 +54,10 @@ export default class AuthService {
         console.log('Error loading the Profile', error);
       } else {
         store.dispatch(ProfileActions.profileLoad(profile));
+
+        if (!profile.init) {
+          store.dispatch(ApiActions.initFromLock(authResult.idToken));
+        }
       }
     });
   }

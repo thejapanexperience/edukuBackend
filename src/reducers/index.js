@@ -1,7 +1,7 @@
 import { combineReducers } from 'redux';
 
-import contacts from './contacts';
 import profile from './profile';
 import validateJwt from './validateJwt';
+import initFromLock from './initFromLock';
 
-export default combineReducers({ contacts, profile, validateJwt });
+export default combineReducers({ profile, validateJwt, initFromLock });
