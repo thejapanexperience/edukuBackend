@@ -14,3 +14,8 @@ export const createChildUser = (jwt, newUsers) => ({
   type: 'CREATE_CHILD_USER',
   payload: axios.post('/api/user/createChildUser', { newUsers }, { headers: { authorization: `Bearer ${jwt}` } }),
 });
+
+export const getChildUser = jwt => ({
+  type: 'GET_CHILD_USER',
+  payload: axios.get('/api/user/getChildUser', { headers: { authorization: `Bearer ${jwt}` } }),
+});

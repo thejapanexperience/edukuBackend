@@ -10,7 +10,8 @@ export default class Layout extends Component {
           <li><Link to="/">Home</Link></li>
           <li><Link to="/login">Login</Link></li>
           <li><Link to="/profile">Profile</Link></li>
-          <li><Link to="/management">Management</Link></li>
+          <li><Link to="/createChildUser">Create Child User</Link></li>
+          <li><Link to="/getChildUser">Get Child User</Link></li>
         </ul>
         <hr />
         {this.props.children}

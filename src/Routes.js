@@ -8,6 +8,8 @@ import Home from './components/Home';
 import AuthService from './utils/AuthService';
 import Auth from './containers/Auth';
 import CreateChildUser from './components/CreateChildUser';
+import GetChildUser from './components/GetChildUser';
+
 
 const auth = new AuthService('7owQ3lWstSd04Mh82aN7iCTfgPGpQOsR', 'ziyaemanet.auth0.com');
 
@@ -23,7 +25,8 @@ const Routes = () => (
       <IndexRoute component={Home} />
       <Route path="/profile" component={Profile} onEnter={requireAuth} />
       <Route path="/login" component={Login} />
-      <Route path="/management" component={CreateChildUser} onEnter={requireAuth} />
+      <Route path="/createChildUser" component={CreateChildUser} onEnter={requireAuth} />
+      <Route path="/getChildUser" component={GetChildUser} onEnter={requireAuth} />
     </Route>
   </Route>
 );
