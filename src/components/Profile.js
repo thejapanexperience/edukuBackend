@@ -7,7 +7,7 @@ import * as ApiActions from '../actions/ApiActions';
 class Profile extends Component {
   validateJwt = () => {
     const { validateJwt, auth } = this.props;
-    validateJwt(auth.getToken());
+    validateJwt(auth.getAccessToken());
   }
 
   render() {

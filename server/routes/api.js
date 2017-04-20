@@ -1,12 +1,13 @@
 const router = require('express').Router();
-const jwt = require('express-jwt');
+const jwtAuthz = require('express-jwt-authz');
 
-const authenticate = jwt({
-  secret: process.env.AUTH0_SECRET,
-  audience: process.env.AUTH0_CLIENT_ID,
-});
+const checkManageAuth = jwtAuthz(['manage']);
+const checkAdminAuth = jwtAuthz(['admin']);
 
 router.use('/validate-jwt', require('./validateJwt'));
-router.use('/user', authenticate, require('./user'));
+
+router.use('/child', checkManageAuth, require('./child'));
+router.use('/self', checkManageAuth, require('./self'));
+// router.use('/admin', checkAdminAuth, require('./admin'));
 
 module.exports = router;

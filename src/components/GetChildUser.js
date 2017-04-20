@@ -8,7 +8,7 @@ import * as ApiActions from '../actions/ApiActions';
 class GetChildUser extends Component {
   componentWillMount() {
     const { getChildUser, auth } = this.props;
-    getChildUser(auth.getToken());
+    getChildUser(auth.getAccessToken());
   }
 
   render() {
@@ -17,7 +17,6 @@ class GetChildUser extends Component {
         <h3>Get Child User</h3>
 
         <hr />
-
         {JSON.stringify(this.props.childUsers)}
       </div>
     );

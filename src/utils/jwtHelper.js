@@ -20,3 +20,7 @@ export function isTokenExpired(token) {
   }
   return !(date.valueOf() > (new Date().valueOf() + (offsetSeconds * 1000)));
 }
+
+export function decodeJWT(token) {
+  return decode(token);
+}

@@ -1,7 +1,10 @@
+'use strict';
+
 const PORT = process.env.PORT || 8443;
+const AUTH0_DOMAIN = process.env.AUTH0_DOMAIN;
 
 const cors = require('cors');
-const enforce = require('express-sslify'); // enforce redirect to https
+// const enforce = require('express-sslify'); // enforce redirect to https
 const bodyParser = require('body-parser');
 const express = require('express');
 const morgan = require('morgan');
@@ -9,6 +12,28 @@ const path = require('path');
 const fs = require('fs');
 require('dotenv').config();
 const mongoose = require('mongoose');
+const jwt = require('express-jwt');
+const jwksRsa = require('jwks-rsa');
+
+// Authentication middleware. When used, the
+// access token must exist and be verified against
+// the Auth0 JSON Web Key Set
+const checkJwt = jwt({
+  // Dynamically provide a signing key
+  // based on the kid in the header and
+  // the singing keys provided by the JWKS endpoint.
+  secret: jwksRsa.expressJwtSecret({
+    cache: true,
+    rateLimit: true,
+    jwksRequestsPerMinute: 5,
+    jwksUri: 'https://ziyaemanet.auth0.com/.well-known/jwks.json',
+  }),
+
+  // Validate the audience and the issuer.
+  audience: 'https://localhost:8443/api',
+  issuer: 'https://ziyaemanet.auth0.com/',
+  algorithms: ['RS256'],
+});
 
 const sslCert = {
   key: fs.readFileSync(`${__dirname}/../server.key`),
@@ -27,6 +52,7 @@ mongoose.connect(MONGODB_URI, (err) => {
 
 // server to redirect http to https
 const appHTTP = express();
+appHTTP.disable('x-powered-by');
 const serverHTTP = require('http').createServer(appHTTP);
 
 serverHTTP.listen(8000, (err) => {
@@ -48,6 +74,7 @@ appHTTP.get('*', (req, res) => {
 
 // https server
 const app = express();
+app.disable('x-powered-by');
 const server = require('https').createServer(sslCert, app);
 
 server.listen(PORT, (err) => {
@@ -68,7 +95,12 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use('/api', require('./routes/api'));
+app.use('*', (req, res, next) => {
+  console.log('req.headers: ', req.headers);
+  next();
+});
+
+app.use('/api', checkJwt, require('./routes/api'));
 
 // ALLOW REACT ROUTING
 app.use('*', (req, res) => {

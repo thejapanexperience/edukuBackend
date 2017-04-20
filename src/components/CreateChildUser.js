@@ -32,7 +32,7 @@ class CreateChildUser extends Component {
     });
     console.log('newUsers: ', newUsers);
 
-    createChildUser(auth.getToken(), newUsers);
+    createChildUser(auth.getAccessToken(), newUsers);
   }
 
   repopulate = () => {
