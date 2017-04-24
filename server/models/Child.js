@@ -26,27 +26,77 @@ exports.getChildUser = (req, res) => {
 //   //   .catch(res.handle);
 // };
 
+function filterAllExceptStudent(newUsers) {
+  return newUsers.filter((element) => {
+    if (element.role !== 'student') return false;
+    return true;
+  });
+}
+
+// administrators: student, educator, administrator, other
+// educator: student
+// parent: student
+// other: student
+// student: none
+function filterNewUsers(newUsers, role) {
+  // filters new users based on what the requesting user role may create
+  // TODO: VALIDATE NEW USERS, XSS FILTER, ETC
+  // REMOVE USERS WHO DO NOT PASS CHECKS
+
+  switch (role) {
+    case 'administrator':
+      return newUsers;
+    case 'parent':
+      return filterAllExceptStudent(newUsers);
+    case 'student':
+      return [];
+    case 'educator':
+      return filterAllExceptStudent(newUsers);
+    case 'other':
+      return filterAllExceptStudent(newUsers);
+    default:
+      return [];
+  }
+}
+
 exports.createChildUser = (req, res) => {
-  const sub = req.user.sub;
+  const sub = req.user.sub; // current user that is requesting this action
   const app_metadata = req.user['https://localhost:8443/app_metadata'];
   const { payment_status, origin_user, roles } = app_metadata;
   let auth0CreationResults = null;
 
-  if (origin_user) {
+  // TODO: MOVE NEW USER FILTERING HERE, IMPLEMENTED IN TWO .then's CURRENTLY
+  // CHECK FOR AND DENY OF LARGE REQUESTS FOR NEW USERS SHOULD BE HERE
+  // DENY ALL REQUESTS WHERE LENGTH OF req.body.newUsers DOES NOT MATCH OUTPUT OF filterNewUsers
+
+  if (origin_user) { // if there is an origin user this means that the requesting user is a child
     User.findOne({ user_id: origin_user })
       .then((user) => {
         // determine if child user creation is allowed and begin auth0 account creation
         if (user.payment_status > moment().unix()) {
-          if (roles[0] !== 'student' && user.child_users.length + req.body.newUsers.length <= user.child_user_allowance) {
+          if (user.child_users.length + req.body.newUsers.length <= user.child_user_allowance) {
+            // TODO: CHECK FOR EXTREMELY LARGE REQUESTS OF NEW UERS AND DENY
+            // COULD POSSIBLY SLOW DOWN SERVER?
+
+            // filter new users to allowed types
+            const newUsersFiltered = filterNewUsers(req.body.newUsers, roles[0]);
+
+            if (newUsersFiltered.length === 0) {
+              return new Promise((resolve, reject) => {
+                reject('NO NEW USERS TO CREATE');
+              });
+            }
+
+            // create promises which create auth0 user accounts
             const auth0Promises = [];
-            req.body.newUsers.forEach((element) => {
+            newUsersFiltered.forEach((element) => {
               auth0Promises.push(childUtils.createChildUserAuth0(element, origin_user));
             });
 
             return Promise.all(auth0Promises);
           } else {
             return new Promise((resolve, reject) => {
-              reject('INVALID ROLE OR USER ALLOWANCE INSUFFICIENT');
+              reject('USER ALLOWANCE INSUFFICIENT');
             });
           }
         } else {
@@ -74,7 +124,7 @@ exports.createChildUser = (req, res) => {
         return Promise.all([user.save(), User.findOne({ user_id: sub })]);
       })
       .then((results) => {
-        // save child users to creating user in mongo
+        // save child users to creating user in mongo (results[1] is a refernce to the creating user in mongo)
         auth0CreationResults.forEach((creationResult) => {
           results[1].child_users.push(creationResult.data.user_id);
         });
@@ -87,19 +137,33 @@ exports.createChildUser = (req, res) => {
       })
       .catch(res.handle);
   } else if (payment_status > moment().unix()) {
+    // user creation with no origin user
     User.findOne({ user_id: sub })
       .then((user) => {
         // determine if child user creation is allowed and begin auth0 account creation
-        if (roles[0] !== 'student' && user.child_users.length + req.body.newUsers.length <= user.child_user_allowance) {
+        if (user.child_users.length + req.body.newUsers.length <= user.child_user_allowance) {
+          // TODO: CHECK FOR EXTREMELY LARGE REQUESTS OF NEW UERS AND DENY
+          // COULD POSSIBLY SLOW DOWN SERVER?
+
+          // filter new users to allowed types
+          const newUsersFiltered = filterNewUsers(req.body.newUsers, roles[0]);
+
+          if (newUsersFiltered.length === 0) {
+            return new Promise((resolve, reject) => {
+              reject('NO NEW USERS TO CREATE');
+            });
+          }
+
+          // create promises which create auth0 user accounts
           const auth0Promises = [];
-          req.body.newUsers.forEach((element) => {
+          newUsersFiltered.forEach((element) => {
             auth0Promises.push(childUtils.createChildUserAuth0(element, sub));
           });
 
           return Promise.all(auth0Promises);
         } else {
           return new Promise((resolve, reject) => {
-            reject('INVALID ROLE OR USER ALLOWANCE INSUFFICIENT');
+            reject('USER ALLOWANCE INSUFFICIENT');
           });
         }
       })
@@ -115,7 +179,7 @@ exports.createChildUser = (req, res) => {
       })
       .then(() => User.findOne({ user_id: sub }))
       .then((user) => {
-        // save child users to origin user(sub is the requesting user and origin user in this case) in mongo
+        // save child users to user in mongo
         auth0CreationResults.forEach((creationResult) => {
           user.child_users.push(creationResult.data.user_id);
         });
