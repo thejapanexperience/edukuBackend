@@ -80,6 +80,7 @@ function filterDeleteUsersRole(deleteUserRole, requestingUserRole) {
 }
 
 function filterDeleteUsers(users, targetUser, requestingUser, requestingUserRole) {
+  //TODO Lots of Checking if users are allowed to delete these accounts
   return Promise.all([
     User.findOne({ user_id: targetUser }),
     User.find({ user_id: { $in: users } })
@@ -93,10 +94,6 @@ function filterDeleteUsers(users, targetUser, requestingUser, requestingUserRole
         if (!childUsers.includes(element.user_id)) pass = false;
         if (!filterDeleteUsersRole(element.roles[0], requestingUserRole)) pass = false;
       });
-
-
-
-
     });
 }
 

@@ -52,6 +52,7 @@ exports.checkPaymentAllowanceThenCreateUsers = (targetUser, newUsersFiltered, ha
         return new Promise((resolve, reject) => reject('INSUFFICIENT USER ALLOWANCE'));
       }
 
+      console.log('PASSED ALLOWANCE AND SUBSCRIPTION CHECKS');
       // confirmed payment status and child allowance, begin auth0 account creation
       const auth0Promises = newUsersFiltered.map(element =>
         createChildUserAuth0(element, targetUser)
@@ -68,6 +69,7 @@ exports.checkPaymentAllowanceThenCreateUsers = (targetUser, newUsersFiltered, ha
       return Promise.all([...auth0Promises, ...statsPromises]);
     })
     .then((creationResults) => {
+
       // seperate results of auth0 and game stats
       const auth0Results = creationResults.slice(0, newUsersFiltered.length);
       const statsResults = creationResults.slice(newUsersFiltered.length);

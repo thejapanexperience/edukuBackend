@@ -18,6 +18,8 @@ const jwksRsa = require('jwks-rsa');
 // Authentication middleware. When used, the
 // access token must exist and be verified against
 // the Auth0 JSON Web Key Set
+// jwt is a JSON web token from Auth0 | access token and id token are jwts
+// only the access token is sent to the back end
 const checkJwt = jwt({
   // Dynamically provide a signing key
   // based on the kid in the header and
