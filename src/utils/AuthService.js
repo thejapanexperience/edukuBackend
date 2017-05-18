@@ -98,5 +98,6 @@ export default class AuthService {
     store.dispatch(ProfileActions.profileClear());
     localStorage.removeItem('id_token');
     localStorage.removeItem('access_token');
+    localStorage.removeItem('state'); // clears redux state from localStorage
   }
 }

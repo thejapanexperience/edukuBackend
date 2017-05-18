@@ -12,10 +12,10 @@ export const initFromLock = jwt => ({
 
 export const createChildUser = (jwt, newUsers) => ({
   type: 'CREATE_CHILD_USER',
-  payload: axios.post('/api/child/createChildUser', { newUsers }, { headers: { authorization: `Bearer ${jwt}` } }),
+  payload: axios.post('/api/child', { newUsers }, { headers: { authorization: `Bearer ${jwt}` } }),
 });
 
 export const getChildUser = jwt => ({
   type: 'GET_CHILD_USER',
-  payload: axios.get('/api/child/getChildUser', { headers: { authorization: `Bearer ${jwt}` } }),
+  payload: axios.get('/api/child', { headers: { authorization: `Bearer ${jwt}` } }),
 });

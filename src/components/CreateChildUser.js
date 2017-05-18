@@ -30,9 +30,14 @@ class CreateChildUser extends Component {
         role: this.refs[`type${index}`].value,
       };
     });
-    console.log('newUsers: ', newUsers);
 
     createChildUser(auth.getAccessToken(), newUsers);
+
+    this.setState({
+      users: [true],
+      passwords: [true],
+      types: [true],
+    });
   }
 
   repopulate = () => {
@@ -81,12 +86,13 @@ class CreateChildUser extends Component {
     const newUserInputs = this.state.users.map((element, index) => (
       <div key={uuid()}>
         <input ref={`user${index}`} />
-        <input ref={`password${index}`} defaultValue={uuid().substr(0,8)}/>
+        <input ref={`password${index}`} defaultValue={'password'/* uuid().substr(0,8) */} />
         <select ref={`type${index}`}>
           <option value="student">student</option>
           <option value="parent">parent</option>
-          <option value="adminstrator">administrator</option>
+          <option value="administrator">administrator</option>
           <option value="educator">educator</option>
+          <option value="other">other</option>
         </select>
       </div>
     ));
@@ -110,7 +116,7 @@ class CreateChildUser extends Component {
         <hr />
 
         <h3>
-          {this.props.createChildUserStatus ? "TRUE" : "FALSE"}
+          {this.props.createChildUserStatus ? 'CREATION SUCCESS' : 'FAILED CREATION'}
         </h3>
       </div>
     );
@@ -120,6 +126,7 @@ class CreateChildUser extends Component {
 export default connect(
   state => ({
     createChildUserStatus: state.createChildUser,
+    profile: state.profile,
   }),
   dispatch => ({
     createChildUser(jwt, newUsers) {

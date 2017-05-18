@@ -2,7 +2,9 @@ const router = require('express').Router();
 
 const Child = require('../models/Child');
 
-router.post('/createChildUser', Child.createChildUser);
-router.get('/getChildUser', Child.getChildUser);
+router.route('/')
+  .post(Child.createChildUser)
+  .get(Child.getChildUser)
+  .delete(Child.deleteChildUser);
 
 module.exports = router;
