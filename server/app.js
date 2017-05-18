@@ -1,4 +1,4 @@
-'use strict';
+
 
 const PORT = process.env.PORT || 8443;
 const AUTH0_DOMAIN = process.env.AUTH0_DOMAIN;
@@ -26,12 +26,14 @@ const checkJwt = jwt({
     cache: true,
     rateLimit: true,
     jwksRequestsPerMinute: 5,
-    jwksUri: 'https://ziyaemanet.auth0.com/.well-known/jwks.json',
+    jwksUri: 'https://thejapanexperience.auth0.com/.well-known/jwks.json',
+    // jwksUri: 'https://ziyaemanet.auth0.com/.well-known/jwks.json',
   }),
 
   // Validate the audience and the issuer.
   audience: 'https://localhost:8443/api',
-  issuer: 'https://ziyaemanet.auth0.com/',
+  issuer: 'https://thejapanexperience.auth0.com/',
+  // issuer: 'https://ziyaemanet.auth0.com/',
   algorithms: ['RS256'],
 });
 
@@ -45,7 +47,8 @@ const sslCert = {
 
 // configure mongoose
 mongoose.Promise = Promise;
-const MONGODB_URI = 'mongodb://127.0.0.1/test';
+// const MONGODB_URI = 'mongodb://127.0.0.1/test';
+const MONGODB_URI = 'mongodb://127.0.0.1/edukuBackend001';
 mongoose.connect(MONGODB_URI, (err) => {
   console.log(err || `Mongo connected to ${MONGODB_URI}`);
 });
@@ -55,8 +58,8 @@ const appHTTP = express();
 appHTTP.disable('x-powered-by');
 const serverHTTP = require('http').createServer(appHTTP);
 
-serverHTTP.listen(8000, (err) => {
-  console.log(err || 'Express http redirect to https listening on port 8000');
+serverHTTP.listen(8007, (err) => {
+  console.log(err || 'Express http redirect to https listening on port 8007');
 });
 
 appHTTP.get('*', (req, res) => {

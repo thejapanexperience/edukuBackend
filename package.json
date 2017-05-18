@@ -1,5 +1,5 @@
 {
-  "name": "eduku",
+  "name": "edukuBackend",
   "version": "1.0.0",
   "description": "",
   "main": "server/app.js",
@@ -10,7 +10,7 @@
     "node": "7"
   },
   "keywords": [],
-  "author": "Ziya Emanet <ziyaemanet@gmail.com>",
+  "author": "Richard Mands <richard@eduku.org>",
   "license": "ISC",
   "dependencies": {
     "auth0-api-jwt-rsa-validation": "0.0.1",

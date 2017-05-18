@@ -16,9 +16,8 @@ exports.initFromLock = (req, res) => {
           return new Promise((resolve, reject) => {
             reject('USER ALREADY EXISTS IN MONGO');
           });
-        } else {
-          return Stat.create({});
         }
+        return Stat.create({});
       })
       .then(statRef => User.create({
         user_id: sub,
@@ -26,11 +25,7 @@ exports.initFromLock = (req, res) => {
         roles,
         game_stats: statRef._id,
       }))
-      .then(() => axios.patch(
-        `https://ziyaemanet.auth0.com/api/v2/users/${sub}`,
-        { app_metadata: { init: true } },
-        { headers: { authorization: `Bearer ${process.env.AUTH0_MANAGEMENT}` } }
-      ))
+      .then(() => axios.patch(`https://thejapanexperience.auth0.com/api/v2/users/${sub}`, { app_metadata: { init: true } }, { headers: { authorization: `Bearer ${process.env.AUTH0_MANAGEMENT}` } }))
       .then(() => res.handle(null, 'MONGO INIT OF AUTH0 LOCK SIGNUP COMPLETE'))
       .catch(res.handle);
   } else {

@@ -3,6 +3,7 @@
   "parser": "babel-eslint",
   "plugins": ["react", "babel"],
   "rules": {
-      "no-underscore-dangle": 0
+      "no-underscore-dangle": 0,
+      "comma-dangle": 0,
     }
 }

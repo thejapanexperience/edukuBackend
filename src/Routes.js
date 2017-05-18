@@ -11,7 +11,8 @@ import CreateChildUser from './components/CreateChildUser';
 import GetChildUser from './components/GetChildUser';
 
 
-const auth = new AuthService('7owQ3lWstSd04Mh82aN7iCTfgPGpQOsR', 'ziyaemanet.auth0.com');
+// const auth = new AuthService('7owQ3lWstSd04Mh82aN7iCTfgPGpQOsR', 'ziyaemanet.auth0.com');
+const auth = new AuthService('GwIqZirHGrqyZQPbNeuL4N7EiM7zjl71', 'thejapanexperience.auth0.com');
 
 const requireAuth = (nextState, replace) => {
   if (!auth.loggedIn()) {

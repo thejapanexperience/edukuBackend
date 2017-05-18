@@ -18,7 +18,7 @@ function createChildUserMongo(newAuth0User, originUser, gameStatsObjectId) {
 
 function createChildUserAuth0(newUser, originUser) {
   return axios.post(
-    'https://ziyaemanet.auth0.com/api/v2/users',
+    'https://thejapanexperience.auth0.com/api/v2/users',
     {
       connection: 'Username-Password-Authentication',
       email: newUser.email,
